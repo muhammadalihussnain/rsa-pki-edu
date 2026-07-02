@@ -11,7 +11,7 @@ type Stage = "loading" | "theory" | "simulation" | "done" | "error";
 
 interface Props {
   sessionId: string;
-  onContinue: () => void;
+  onContinue: (cert: IssuedCertificate) => void;
 }
 
 export default function CACertificate({ sessionId, onContinue }: Props) {
@@ -234,7 +234,7 @@ export default function CACertificate({ sessionId, onContinue }: Props) {
           </div>
 
           <div className="ca-gate">
-            <button className="ca-btn" onClick={onContinue}>
+            <button className="ca-btn" onClick={() => certificate && onContinue(certificate)}>
               Continue →
             </button>
           </div>

@@ -6,6 +6,7 @@
 #include "Education.h"
 #include "SessionHandler.h"
 #include "CAHandler.h"
+#include "DocumentHandler.h"
 
 /// @brief Generate a simple random session ID (hex string)
 static std::string generateSessionId() {
@@ -52,6 +53,20 @@ int main() {
     svr.Post("/api/ca/issue-certificate", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content(handleIssueCertificate(req.body), "application/json");
+    });
+
+    // ── Phase 5: Upload Document ──────────────────────────────────────────────
+    // Accepts plain text body; returns content + SHA-256 hash
+    svr.Post("/api/alice/upload-document", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(handleUploadDocument(req.body), "application/json");
+    });
+
+    // ── Phase 5: Sign Document ────────────────────────────────────────────────
+    // Alice signs the document hash with her RSA private key
+    svr.Post("/api/alice/sign-document", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(handleSignDocument(req.body), "application/json");
     });
 
     std::cout << "Server listening on http://localhost:8081\n";

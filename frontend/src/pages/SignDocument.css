@@ -1,0 +1,356 @@
+.sd-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  text-align: left;
+}
+
+.sd-h1 {
+  font-size: 2rem !important;
+  margin: 0 0 0.6rem !important;
+  letter-spacing: -0.5px !important;
+}
+
+.sd-intro {
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 2rem !important;
+}
+
+/* ── Certificate reference banner ── */
+.sd-cert-ref {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.88rem;
+}
+
+.sd-cert-label {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sd-cert-serial,
+.sd-cert-issuer,
+.sd-cert-valid {
+  color: var(--text);
+}
+
+.sd-cert-serial code {
+  background: none;
+  color: var(--accent);
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+/* ── Sections ── */
+.sd-section {
+  margin-bottom: 2.5rem;
+}
+
+.sd-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.sd-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sd-step-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+/* ── Upload zone ── */
+.sd-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sd-upload-zone:hover,
+.sd-upload-zone:focus {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  outline: none;
+}
+
+.sd-upload-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sd-upload-hint {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0 !important;
+}
+
+.sd-file-input {
+  display: none;
+}
+
+/* ── Document preview ── */
+.sd-doc-preview {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sd-doc-meta {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.sd-doc-content {
+  margin: 0;
+  padding: 1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-h);
+  background: var(--bg);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── Hash box ── */
+.sd-explain {
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 0.8rem !important;
+}
+
+.sd-hash-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.sd-hash-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.sd-hash-value {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text-h);
+  background: none;
+  padding: 0;
+  word-break: break-all;
+}
+
+/* ── Sign button ── */
+.sd-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.sd-btn:hover { opacity: 0.85; }
+
+/* ── Signing steps ── */
+.sd-sign-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.sd-sign-step {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  background: var(--code-bg);
+  animation: sdFade 0.4s ease;
+}
+
+@keyframes sdFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sd-sign-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.sd-sign-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sd-sign-title {
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: var(--text-h);
+}
+
+.sd-sign-desc {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0 0 0.5rem !important;
+}
+
+.sd-sign-value {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  background: var(--bg);
+  color: var(--accent);
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  word-break: break-all;
+  border: 1px solid var(--border);
+}
+
+.sd-signing-loader {
+  color: var(--accent);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.sd-spinner {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Result card ── */
+.sd-result-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.sd-result-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.sd-result-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  width: 8rem;
+  flex-shrink: 0;
+}
+
+.sd-result-value {
+  font-family: var(--mono);
+  font-size: 0.87rem;
+  color: var(--text-h);
+  background: none;
+  padding: 0;
+  word-break: break-all;
+}
+
+.sd-truncate {
+  color: var(--text);
+  cursor: help;
+}
+
+.sd-result-banner {
+  background: var(--accent-bg);
+  border-top: 1px solid var(--accent-border);
+  color: var(--accent);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ── Gate ── */
+.sd-gate {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* ── Error ── */
+.sd-error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sd-error {
+    background: #450a0a;
+    border-color: #991b1b;
+    color: #fca5a5;
+  }
+}
