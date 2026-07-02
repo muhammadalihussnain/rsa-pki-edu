@@ -1,0 +1,289 @@
+.ca-cert {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #1a1a2e;
+}
+
+.ca-intro {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Theory sections ── */
+.ca-section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+}
+
+.ca-section-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ca-section-item:hover { background: #f5f7ff; }
+
+.ca-section-active {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+
+.ca-section-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ca-section-text {
+  margin: 0.4rem 0 0;
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* ── Mock certificate table ── */
+.ca-mock-cert {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.ca-mock-cert h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.ca-field-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ca-field-table th,
+.ca-field-table td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ca-field-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.ca-field-table code {
+  background: #e8eaf6;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.ca-mock-val {
+  word-break: break-all;
+  font-size: 0.82rem;
+}
+
+/* ── Gate button ── */
+.ca-gate {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1.5rem 0;
+}
+
+.ca-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ca-btn:hover { background: #4f46e5; }
+
+/* ── Packet exchange ── */
+.ca-simulation {
+  margin-bottom: 2rem;
+}
+
+.ca-simulation h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.ca-packets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.ca-packet {
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  animation: fadeSlide 0.4s ease;
+}
+
+.ca-packet-1 {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.ca-packet-2 {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ca-packet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+
+.ca-packet-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ca-packet-route {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.ca-packet-type {
+  margin-left: auto;
+  font-size: 0.78rem;
+  background: #e8eaf6;
+  color: #4338ca;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-family: monospace;
+}
+
+.ca-packet-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #555;
+}
+
+.ca-packet-loading {
+  color: #3b82f6;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ca-spinner {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Issued certificate card ── */
+.ca-issued-cert h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.ca-cert-card {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.ca-cert-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ca-cert-row:last-of-type {
+  border-bottom: none;
+}
+
+.ca-cert-row-long {
+  flex-wrap: wrap;
+}
+
+.ca-cert-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  color: #888;
+  width: 9rem;
+  flex-shrink: 0;
+}
+
+.ca-cert-value {
+  font-family: monospace;
+  font-size: 0.88rem;
+  color: #1a1a2e;
+}
+
+.ca-cert-truncate {
+  word-break: break-all;
+  cursor: help;
+  color: #555;
+}
+
+.ca-cert-valid-banner {
+  background: #dcfce7;
+  border-top: 1px solid #86efac;
+  color: #15803d;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ── States ── */
+.ca-loading,
+.ca-error {
+  padding: 3rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.ca-error { color: #dc2626; }
