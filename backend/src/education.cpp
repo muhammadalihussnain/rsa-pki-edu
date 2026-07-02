@@ -11,38 +11,78 @@ namespace Education {
  *  - public_key / private_key summary
  */
 std::string rsaTheoryJson() {
-    // Note: all unicode replaced with ASCII to ensure portable compilation
     return R"JSON({
+  "what_is_rsa": {
+    "title": "What is RSA?",
+    "body": "RSA (Rivest-Shamir-Adleman) is a public-key cryptosystem invented in 1977. It relies on the mathematical difficulty of factoring the product of two large prime numbers. RSA uses a key pair: a public key anyone can see, and a private key only the owner holds. Data encrypted with the public key can only be decrypted with the private key, and vice versa.",
+    "uses": ["Encrypting messages", "Digital signatures", "Key exchange in TLS/HTTPS", "Certificate authorities (PKI)"]
+  },
+  "flavours": [
+    {
+      "name": "RSA-OAEP",
+      "full_name": "Optimal Asymmetric Encryption Padding",
+      "use": "Encryption",
+      "security": "High",
+      "note": "Recommended for encrypting data. Adds random padding to prevent chosen-ciphertext attacks."
+    },
+    {
+      "name": "RSA-PSS",
+      "full_name": "Probabilistic Signature Scheme",
+      "use": "Digital Signatures",
+      "security": "High",
+      "note": "Recommended for signing. Uses randomised padding; provably secure."
+    },
+    {
+      "name": "RSA-PKCS1 v1.5",
+      "full_name": "Public Key Cryptography Standards #1",
+      "use": "Encryption & Signatures",
+      "security": "Medium",
+      "note": "Legacy standard. Still widely used in TLS but vulnerable to padding oracle attacks if misused."
+    },
+    {
+      "name": "Raw RSA",
+      "full_name": "Textbook RSA",
+      "use": "Educational only",
+      "security": "Low",
+      "note": "No padding. Deterministic and malleable. Never use in production. Used here to teach the math."
+    }
+  ],
   "steps": [
     {
       "index": 1,
-      "title": "Choose two prime numbers",
-      "explanation": "Pick two distinct prime numbers p and q. They should be large in practice, but we use small ones here for clarity."
+      "title": "Choose two distinct prime numbers p and q",
+      "explanation": "Pick two distinct prime numbers p and q. Condition: p != q and both must be prime.",
+      "condition": "p != q,  p and q are prime"
     },
     {
       "index": 2,
-      "title": "Compute the modulus n",
-      "explanation": "Calculate n = p x q. This modulus is part of both the public and private key."
+      "title": "Compute the modulus n = p x q",
+      "explanation": "Multiply p and q to get n. This modulus appears in both the public and private key. Its size (in bits) is the RSA key size.",
+      "condition": "n = p x q"
     },
     {
       "index": 3,
-      "title": "Compute Euler totient phi(n)",
-      "explanation": "Calculate phi(n) = (p - 1) x (q - 1). This tells us how many integers less than n are coprime with n."
+      "title": "Compute Euler totient: phi(n) = (p-1)(q-1)",
+      "explanation": "phi(n) counts how many integers from 1 to n are coprime with n. For RSA this simplifies to (p-1)(q-1) because p and q are prime.",
+      "condition": "phi(n) = (p - 1) x (q - 1)"
     },
     {
       "index": 4,
-      "title": "Choose the public exponent e",
-      "explanation": "Pick e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1 (e and phi(n) are coprime). A common choice is 65537; in our example we use 7."
+      "title": "Choose public exponent e",
+      "explanation": "Pick e such that it is coprime with phi(n). Condition: 1 < e < phi(n) and gcd(e, phi(n)) = 1. Common choice is 65537.",
+      "condition": "1 < e < phi(n)  and  gcd(e, phi(n)) = 1"
     },
     {
       "index": 5,
-      "title": "Compute the private exponent d",
-      "explanation": "Find d such that e x d = 1 (mod phi(n)). This is the modular multiplicative inverse of e."
+      "title": "Compute private exponent d",
+      "explanation": "Find d as the modular inverse of e mod phi(n). Condition: (e x d) mod phi(n) = 1.",
+      "condition": "(e x d) mod phi(n) = 1"
     },
     {
       "index": 6,
-      "title": "Keys are ready",
-      "explanation": "Public key: (e, n) -- shared openly. Private key: (d, n) -- kept secret. Encrypt with public key, decrypt with private key."
+      "title": "Publish public key, keep private key secret",
+      "explanation": "Public key = (e, n) — share freely. Private key = (d, n) — never share. Discard p, q, phi(n).",
+      "condition": "Public: (e, n)   Private: (d, n)"
     }
   ],
   "example": {
@@ -53,15 +93,15 @@ std::string rsaTheoryJson() {
     "e": 7,
     "d": 3,
     "steps": [
-      { "label": "p = 3, q = 11",            "note": "Two small primes chosen for illustration" },
-      { "label": "n = p x q = 33",            "note": "The modulus used in both keys" },
-      { "label": "phi(n) = (3-1)(11-1) = 20", "note": "Euler totient" },
-      { "label": "e = 7",                      "note": "Chosen because gcd(7, 20) = 1" },
-      { "label": "d = 3",                      "note": "Because 7 x 3 = 21 = 1 (mod 20)" }
+      { "label": "p = 3, q = 11",            "condition": "p != q, both prime", "note": "Two small primes chosen for illustration" },
+      { "label": "n = 3 x 11 = 33",           "condition": "n = p x q",         "note": "The modulus used in both keys" },
+      { "label": "phi = (3-1)(11-1) = 20",    "condition": "phi = (p-1)(q-1)",   "note": "Euler totient of n" },
+      { "label": "e = 7",                      "condition": "gcd(7, 20) = 1, 1 < 7 < 20", "note": "7 is coprime with 20" },
+      { "label": "d = 3",                      "condition": "(7 x 3) mod 20 = 1", "note": "21 mod 20 = 1 — confirmed" }
     ],
     "public_key":  { "e": 7, "n": 33 },
     "private_key": { "d": 3, "n": 33 },
-    "verify": "Encrypt m=4: 4^7 mod 33 = 16. Decrypt: 16^3 mod 33 = 4."
+    "verify": "Encrypt m=4: c = 4^7 mod 33 = 16384 mod 33 = 16. Decrypt: m = 16^3 mod 33 = 4096 mod 33 = 4."
   }
 })JSON";
 }

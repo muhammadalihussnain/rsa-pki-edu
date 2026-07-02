@@ -2,13 +2,13 @@
   max-width: 820px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-  font-family: system-ui, sans-serif;
-  color: #1a1a2e;
+  text-align: left;
 }
 
 .ca-intro {
-  color: #555;
+  color: var(--text);
   margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 /* ── Theory sections ── */
@@ -23,85 +23,95 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 0.9rem 1rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.ca-section-item:hover { background: #f5f7ff; }
+.ca-section-item:hover { border-color: var(--accent); }
 
 .ca-section-active {
-  background: #eef2ff;
-  border-color: #6366f1;
+  background: var(--accent-bg);
+  border-color: var(--accent);
 }
 
 .ca-section-num {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.8rem;
+  height: 1.8rem;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--accent);
   color: #fff;
+  font-size: 0.85rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
+.ca-section-body strong {
+  color: var(--text-h);
+  font-size: 0.97rem;
+}
+
 .ca-section-text {
-  margin: 0.4rem 0 0;
-  color: #444;
-  font-size: 0.95rem;
-  line-height: 1.55;
+  margin: 0.4rem 0 0 !important;
+  color: var(--text);
+  font-size: 0.93rem;
+  line-height: 1.6;
 }
 
 /* ── Mock certificate table ── */
 .ca-mock-cert {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.4rem;
   margin-bottom: 2rem;
 }
 
 .ca-mock-cert h2 {
-  margin-top: 0;
-  font-size: 1.2rem;
+  margin-top: 0 !important;
+  font-size: 1.1rem !important;
+  color: var(--text-h);
 }
 
 .ca-field-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .ca-field-table th,
 .ca-field-table td {
   text-align: left;
   padding: 0.5rem 0.7rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-h);
 }
 
 .ca-field-table th {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  color: #888;
+  color: var(--text);
+  letter-spacing: 0.05em;
 }
 
 .ca-field-table code {
-  background: #e8eaf6;
+  background: var(--bg);
+  color: var(--accent);
   padding: 2px 5px;
   border-radius: 4px;
+  font-size: 0.82rem;
 }
 
 .ca-mock-val {
   word-break: break-all;
-  font-size: 0.82rem;
 }
 
-/* ── Gate button ── */
+/* ── Gate ── */
 .ca-gate {
   display: flex;
   justify-content: flex-end;
@@ -109,26 +119,24 @@
 }
 
 .ca-btn {
-  background: #6366f1;
+  background: var(--accent);
   color: #fff;
   border: none;
   padding: 0.75rem 1.75rem;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: opacity 0.15s;
 }
-
-.ca-btn:hover { background: #4f46e5; }
+.ca-btn:hover { opacity: 0.85; }
 
 /* ── Packet exchange ── */
-.ca-simulation {
-  margin-bottom: 2rem;
-}
+.ca-simulation { margin-bottom: 2rem; }
 
 .ca-simulation h2 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font-size: 1.2rem !important;
+  margin-bottom: 1rem !important;
+  color: var(--text-h);
 }
 
 .ca-packets {
@@ -140,22 +148,15 @@
 .ca-packet {
   border-radius: 8px;
   padding: 1rem 1.2rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   animation: fadeSlide 0.4s ease;
 }
 
-.ca-packet-1 {
-  background: #eff6ff;
-  border-color: #93c5fd;
-}
-
-.ca-packet-2 {
-  background: #f0fdf4;
-  border-color: #86efac;
-}
+.ca-packet-1 { background: var(--accent-bg); border-color: var(--accent-border); }
+.ca-packet-2 { background: var(--code-bg);   border-color: var(--border); }
 
 @keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -170,12 +171,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--accent);
   color: #fff;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -183,26 +184,28 @@
 .ca-packet-route {
   font-weight: 600;
   font-size: 0.95rem;
+  color: var(--text-h);
 }
 
 .ca-packet-type {
   margin-left: auto;
-  font-size: 0.78rem;
-  background: #e8eaf6;
-  color: #4338ca;
+  font-size: 0.75rem;
+  background: var(--code-bg);
+  color: var(--accent);
   padding: 2px 8px;
   border-radius: 12px;
-  font-family: monospace;
+  font-family: var(--mono);
+  border: 1px solid var(--accent-border);
 }
 
 .ca-packet-desc {
-  margin: 0;
+  margin: 0 !important;
   font-size: 0.88rem;
-  color: #555;
+  color: var(--text);
 }
 
 .ca-packet-loading {
-  color: #3b82f6;
+  color: var(--accent);
   font-size: 0.9rem;
   display: flex;
   align-items: center;
@@ -213,22 +216,21 @@
   display: inline-block;
   animation: spin 0.8s linear infinite;
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Issued certificate card ── */
 .ca-issued-cert h2 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font-size: 1.2rem !important;
+  margin-bottom: 1rem !important;
+  color: var(--text-h);
 }
 
 .ca-cert-card {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1.5rem;
+  background: var(--code-bg);
 }
 
 .ca-cert-row {
@@ -236,41 +238,40 @@
   align-items: baseline;
   gap: 1rem;
   padding: 0.6rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 
-.ca-cert-row:last-of-type {
-  border-bottom: none;
-}
+.ca-cert-row:last-of-type { border-bottom: none; }
 
-.ca-cert-row-long {
-  flex-wrap: wrap;
-}
+.ca-cert-row-long { flex-wrap: wrap; }
 
 .ca-cert-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  color: #888;
+  letter-spacing: 0.04em;
+  color: var(--text);
   width: 9rem;
   flex-shrink: 0;
 }
 
 .ca-cert-value {
-  font-family: monospace;
+  font-family: var(--mono);
   font-size: 0.88rem;
-  color: #1a1a2e;
+  color: var(--text-h);
+  background: none;
+  padding: 0;
 }
 
 .ca-cert-truncate {
   word-break: break-all;
   cursor: help;
-  color: #555;
+  color: var(--text);
 }
 
 .ca-cert-valid-banner {
-  background: #dcfce7;
-  border-top: 1px solid #86efac;
-  color: #15803d;
+  background: var(--accent-bg);
+  border-top: 1px solid var(--accent-border);
+  color: var(--accent);
   padding: 0.75rem 1rem;
   font-weight: 600;
   font-size: 0.95rem;
@@ -283,7 +284,6 @@
   padding: 3rem;
   text-align: center;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--text);
 }
-
 .ca-error { color: #dc2626; }
