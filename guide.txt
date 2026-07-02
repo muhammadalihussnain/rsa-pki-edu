@@ -1,0 +1,324 @@
+
+---
+
+## Phase 0 — GitHub Repository Setup
+
+### Steps
+
+1. Create a new GitHub repository named `rsa-pki-edu`
+2. Set default branch to `main`
+3. Add branch protection rules on `main`:
+   - Require PR review before merge
+   - Require status checks (CI) to pass
+4. Add `.gitignore` for C++ and Node
+5. Add `LICENSE` (MIT recommended for educational use)
+6. Add initial `README.md` with project description
+
+### Verification Checkpoint
+- Repo is accessible, branch protection is active
+- Initial commit passes a placeholder CI workflow
+
+---
+
+## Phase 1 — Backend Scaffolding (C++)
+
+### Steps
+
+1. Set up `CMakeLists.txt` with:
+   - C++17 standard
+   - Google Test as a dependency (via FetchContent)
+   - Coverage flags (`--coverage` / `gcov`)
+2. Implement `BigInteger` class:
+   - Addition, subtraction, multiplication, modulo
+   - Modular exponentiation (`mod_pow`)
+   - Miller-Rabin primality test
+3. Implement `RSA` class:
+   - `generate_prime(bits)` — generate random prime
+   - `generate_keypair(bits)` — returns `{n, e, d}`
+   - `encrypt(m, e, n)` → ciphertext
+   - `decrypt(c, d, n)` → plaintext
+   - `sign(hash, d, n)` → signature
+   - `verify(signature, e, n)` → hash
+4. Expose a `/api/health` endpoint to confirm server runs
+
+### Verification Checkpoint
+- Unit tests pass for BigInteger and RSA with known small-number examples
+- `/api/health` returns 200
+- Code coverage ≥ 90% on math and RSA modules
+
+---
+
+## Phase 2 — RSA Educational Content Module
+
+### Steps
+
+1. Create endpoint `GET /api/education/rsa-theory`
+   - Returns structured JSON with:
+     - Step-by-step RSA key generation explanation (text)
+     - Small worked example: pick p=3, q=11 → n=33, φ=20, e=7, d=3
+     - Show: public key (e, n), private key (d, n)
+2. Frontend: "RSA Theory" page
+   - Renders theory text as styled reading material
+   - Renders small example with each step highlighted
+   - "I understand, continue →" button to proceed
+
+### Verification Checkpoint
+- Frontend displays theory and small example correctly
+- Small example numbers are mathematically verifiable by students manually
+- Backend test covers endpoint response structure
+
+---
+
+## Phase 3 — Interactive Key Generation Module
+
+### Steps
+
+1. Create endpoint `POST /api/session/init`
+   - Server generates RSA key pairs for:
+     - Alice (2048-bit)
+     - Bob (2048-bit)
+     - CA (2048-bit)
+     - Fake-Alice (2048-bit)
+   - Returns all public keys + key sizes; private keys stay server-side in session
+2. Frontend: "Key Generation" page
+   - Animated step-by-step display for each actor
+   - Shows: actor name, public key (n, e), key size in bits
+   - Progress indicator: "Generating Alice's keys… done ✓"
+
+### Verification Checkpoint
+- All four actors' keys generated and displayed
+- Key sizes shown correctly
+- Private keys never exposed in API response (security audit)
+- Unit tests cover key generation for each actor
+
+---
+
+## Phase 4 — Certificate Authority & Digital Certificate Module
+
+### Steps
+
+1. Create educational content endpoint `GET /api/education/certificate-theory`
+   - What is a digital certificate (X.509-style explanation)
+   - What fields it contains: subject, issuer, public key, signature, validity
+   - Proof example: show a mock certificate with dummy values, explain each field
+2. Implement `Certificate` class (backend):
+   - Fields: subject, issuer, public_key (n, e), serial, validity_period, ca_signature
+   - `CA::issue_certificate(subject_name, subject_public_key)` → Certificate
+   - CA signs `hash(subject + public_key + serial)` with its private key
+3. Create endpoint `POST /api/ca/issue-certificate`
+   - Alice requests certificate, passing her public key
+   - CA validates, signs, returns certificate
+   - Response includes: packets exchanged log (request packet → CA signs → certificate packet)
+4. Frontend: "CA Certificate" page
+   - First: show certificate theory reading material
+   - Then: simulate packet exchange animation (Alice → CA, CA → Alice)
+   - Display issued certificate with all fields labeled
+
+### Verification Checkpoint
+- Certificate theory displayed before simulation
+- Packet exchange log shows exactly 2 packets (request + certificate)
+- Certificate fields all populated and CA signature is valid
+- Unit tests cover certificate issuance and CA signature
+
+---
+
+## Phase 5 — Document Upload & Signing Module
+
+### Steps
+
+1. Create endpoint `POST /api/alice/upload-document`
+   - Accepts a text file upload
+   - Returns: file content, SHA-256 hash (custom implementation, no stdlib crypto)
+2. Implement `Hash` class:
+   - Custom SHA-256 from scratch (no `<openssl>` or similar)
+3. Create endpoint `POST /api/alice/sign-document`
+   - Alice signs the document hash using her RSA private key
+   - Returns: original hash, signature (hex), certificate reference
+4. Frontend: "Sign Document" page
+   - File upload input
+   - Display file content on upload
+   - Show computed hash
+   - Show generated signature
+   - "Send to Bob →" button
+
+### Verification Checkpoint
+- Hash output matches known SHA-256 test vectors
+- Signature is generated and displayed in hex
+- UI shows all intermediate steps clearly
+- 90% coverage on Hash and signing logic
+
+---
+
+## Phase 6 — Bob's Verification Module
+
+### Steps
+
+1. Create educational content endpoint `GET /api/education/certificate-verification`
+   - How Bob verifies a certificate: checks CA signature using CA's public key
+   - Step-by-step reading material
+2. Create educational content endpoint `GET /api/education/signature-verification`
+   - How Bob verifies Alice's signature: decrypt signature → compare hash
+   - Step-by-step reading material
+3. Create endpoint `POST /api/bob/verify`
+   - Input: Alice's certificate + document + signature
+   - Step 1: Verify certificate (CA signature check) → result
+   - Step 2: Extract Alice's public key from certificate
+   - Step 3: Compute hash of document
+   - Step 4: Decrypt signature using Alice's public key
+   - Step 5: Compare hashes → verified / not verified
+   - Returns full step-by-step log with result
+4. Frontend: "Bob Verifies" page
+   - Show certificate verification theory → then run verification
+   - Show signature verification theory → then run verification
+   - Final banner: "✓ Verified: This document is from Alice"
+
+### Verification Checkpoint
+- Certificate verification steps displayed as reading before execution
+- Signature verification steps displayed as reading before execution
+- Successful verification banner shows correctly
+- All verification steps logged and visible on UI
+
+---
+
+## Phase 7 — Attacker (Fake-Alice) Module
+
+### Steps
+
+1. Create endpoint `POST /api/fake-alice/attempt`
+   - Fake-Alice has her own RSA key pair (no CA certificate)
+   - She signs a (possibly modified) document with her own private key
+   - Sends fake certificate (self-signed or forged) + document + signature to Bob
+2. Extend `POST /api/bob/verify` to handle fake-alice scenario:
+   - Certificate check fails: CA signature invalid
+   - Signature check fails: hash mismatch
+   - Returns failure log with specific failure point
+3. Frontend: "Attacker Scenario" page
+   - Walk through same steps as Phase 6 but with Fake-Alice's data
+   - At failure point: red banner "✗ Verification Failed: Certificate not trusted"
+   - Or if cert passes but sig fails: "✗ Signature Mismatch: Document tampered"
+   - Educational callout explaining why each check failed
+
+### Verification Checkpoint
+- Attacker scenario always fails verification
+- Failure reason is specific and educational
+- UI shows red failure state clearly
+- Unit tests cover both failure paths
+
+---
+
+## Phase 8 — Custom TLS Simulation Layer
+
+### Steps
+
+1. Design a simplified TLS 1.3-like handshake (no pre-built TLS libs):
+   - ClientHello: Bob sends supported params
+   - ServerHello: Alice responds with certificate + chosen params
+   - Key Exchange: use RSA to exchange a session key
+   - Finished: both sides verify handshake integrity with HMAC (custom)
+2. Implement `TLSSession` class in backend
+3. Create endpoint `POST /api/tls/handshake`
+   - Simulates the handshake steps
+   - Returns each step's packet content for display
+4. Implement custom HMAC (no stdlib)
+5. Frontend: "TLS Handshake" page
+   - Packet-by-packet animation of handshake
+   - Each packet labeled with its TLS message type
+
+### Verification Checkpoint
+- Full handshake completes successfully with Alice
+- Handshake fails (or detects intrusion) when Fake-Alice injects
+- HMAC verified at Finished step
+- Unit tests cover handshake state machine
+
+---
+
+## Phase 9 — CI/CD Pipeline
+
+### Steps
+
+1. `.github/workflows/backend-ci.yml`:
+   - Trigger: push to any branch, PR to main
+   - Steps: install deps, cmake build, run tests, generate coverage report
+   - Fail if coverage < 90%
+2. `.github/workflows/frontend-ci.yml`:
+   - Trigger: push to any branch, PR to main
+   - Steps: npm install, run Jest tests, generate coverage report
+   - Fail if coverage < 90%
+3. `.github/workflows/coverage.yml`:
+   - Upload combined coverage to Codecov or similar
+4. Add status badges to README
+
+### Verification Checkpoint
+- All CI workflows pass on initial push
+- Coverage threshold enforced (build fails below 90%)
+- PR to main blocked if CI fails
+
+---
+
+## Phase 10 — Integration & Final Review
+
+### Steps
+
+1. End-to-end walkthrough test (automated):
+   - Init session → issue cert → upload doc → sign → verify (Alice) → verify (Fake-Alice)
+2. Security audit:
+   - Confirm private keys never leave backend
+   - Confirm no pre-built crypto lib used for key exchange
+   - Confirm TLS layer encrypts simulated traffic
+3. Educational content review:
+   - All theory sections present before their respective modules
+   - Small RSA example mathematically correct
+   - Certificate example fields all explained
+4. UI/UX pass:
+   - Each step has a "continue" gate so students read before proceeding
+   - Responsive layout for classroom projectors (1080p minimum)
+5. Final README update with:
+   - Setup instructions
+   - How to run backend and frontend
+   - Architecture diagram (ASCII or image)
+
+### Verification Checkpoint
+- Full student walkthrough works from start to finish without errors
+- All 7 screens functional (Theory, Keys, CA Cert, Sign, Bob Verify, Attacker, TLS)
+- CI green on main branch
+- Coverage ≥ 90% confirmed
+
+---
+
+## Development Order Summary
+
+| Phase | What Gets Built                        | Depends On   |
+|-------|----------------------------------------|--------------|
+| 0     | GitHub repo, branch protection, CI     | —            |
+| 1     | C++ backend scaffold, RSA math         | 0            |
+| 2     | RSA theory module                      | 1            |
+| 3     | Key generation for all actors          | 1            |
+| 4     | CA & certificate module                | 3            |
+| 5     | Document upload & signing              | 4            |
+| 6     | Bob's verification                     | 5            |
+| 7     | Fake-Alice attacker scenario           | 6            |
+| 8     | TLS simulation layer                   | 3, 6         |
+| 9     | CI/CD pipelines                        | 1, frontend  |
+| 10    | Integration, audit, final review       | All          |
+
+---
+
+## Quality Standards
+
+- C++ code follows Google C++ Style Guide
+- All functions documented with Doxygen comments
+- No use of `goto`, raw owning pointers (use smart pointers)
+- Frontend: ESLint + Prettier enforced in CI
+- No pre-built library for RSA, key exchange, SHA-256, or HMAC
+- `cpp-httplib` or similar allowed only for HTTP routing, not crypto
+- Every public function has at least one unit test
+- Integration tests cover all happy paths and failure paths
+
+---
+
+## Notes for Students
+
+Each phase in the UI is gated — students must read the educational material before
+the simulation runs. This ensures concepts are understood before being demonstrated.
+The attacker scenario (Phase 7) is intentionally placed after the successful verification
+so students can contrast what a valid vs. invalid verification looks like.

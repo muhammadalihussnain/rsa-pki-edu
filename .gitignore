@@ -1,3 +1,16 @@
+# IDE and tool folders
+.claude/
+.vscode/
+
+# C++ build artifacts
+backend/build/
+*.o
+*.a
+*.gcda
+*.gcno
+*.gcov
+cmake-build-*/
+
 # Logs
 logs
 *.log
