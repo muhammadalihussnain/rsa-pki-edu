@@ -28,10 +28,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(httplib)
 
-# Core library (BigInteger + RSA)
+# Core library (BigInteger + RSA + Education + Session + Certificate + CA)
 add_library(rsa_core
     src/BigInteger.cpp
     src/RSA.cpp
+    src/education.cpp
+    src/Session.cpp
+    src/SessionHandler.cpp
+    src/Certificate.cpp
+    src/CAHandler.cpp
 )
 target_include_directories(rsa_core PUBLIC include)
 
@@ -45,6 +50,9 @@ enable_testing()
 add_executable(rsa_tests
     tests/test_biginteger.cpp
     tests/test_rsa.cpp
+    tests/test_education.cpp
+    tests/test_session.cpp
+    tests/test_certificate.cpp
 )
 target_include_directories(rsa_tests PRIVATE include)
 target_link_libraries(rsa_tests PRIVATE rsa_core GTest::gtest_main)
