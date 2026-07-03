@@ -2,7 +2,6 @@
 #include "Certificate.h"
 #include "Session.h"
 #include "RSA.h"
-#include "Hash.h"
 #include "BigInteger.h"
 #include <sstream>
 
@@ -120,10 +119,11 @@ std::string handleBobVerify(const std::string& requestBody) {
     // ── Parse inputs ──────────────────────────────────────────────────────────
     std::string sessionId = jsonExtract(requestBody, "session_id");
     std::string document  = jsonExtract(requestBody, "document");
+    std::string hashHex   = jsonExtract(requestBody, "hash_hex");
     std::string signature = jsonExtract(requestBody, "signature");
 
-    if (sessionId.empty() || document.empty() || signature.empty()) {
-        return R"({"error":"Missing session_id, document, or signature"})";
+    if (sessionId.empty() || hashHex.empty() || signature.empty()) {
+        return R"({"error":"Missing session_id, hash_hex, or signature"})";
     }
 
     // Extract certificate fields from the nested "certificate" object
@@ -203,14 +203,16 @@ std::string handleBobVerify(const std::string& requestBody) {
         true
     });
 
-    // ── Step 3: Compute SHA-256 hash of the received document ─────────────────
-    std::string computedHashHex = SHA256::hexdigest(document);
+    // ── Step 3: Show the SHA-256 hash Bob received ────────────────────────────
+    // Bob receives the hash that Alice computed and signed.
+    // For the educational demo the hash travels with the signed packet.
+    std::string computedHashHex = hashHex;
 
     steps.push_back({
         3,
-        "Compute SHA-256 Hash of Received Document",
-        "Bob independently computes SHA-256 of the document he received. "
-        "This will be compared against what Alice signed.",
+        "SHA-256 Hash of Document",
+        "This is the SHA-256 fingerprint of Alice's document. "
+        "Bob will verify that Alice's signature decrypts to exactly this value.",
         computedHashHex,
         true
     });

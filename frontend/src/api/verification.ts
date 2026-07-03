@@ -16,13 +16,14 @@ export async function fetchSignatureVerificationTheory(): Promise<VerifyTheoryRe
 export async function bobVerify(
   sessionId: string,
   document: string,
+  hashHex: string,
   signature: string,
   certificate: IssuedCertificate
 ): Promise<VerifyResponse> {
   const res = await fetch("/api/bob/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ session_id: sessionId, document, signature, certificate }),
+    body: JSON.stringify({ session_id: sessionId, document, hash_hex: hashHex, signature, certificate }),
   });
   if (!res.ok) throw new Error(`Verification failed: ${res.status}`);
   return res.json() as Promise<VerifyResponse>;

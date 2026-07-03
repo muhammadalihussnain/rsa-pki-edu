@@ -66,6 +66,7 @@ export default function BobVerify({
       const result = await bobVerify(
         sessionId,
         document,
+        signResult.original_hash,
         signResult.signature,
         certificate
       );

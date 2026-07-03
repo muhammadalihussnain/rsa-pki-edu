@@ -16,6 +16,7 @@ export default function SignDocument({ sessionId, certificate, onContinue }: Pro
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [stage, setStage] = useState<Stage>("upload");
   const [error, setError] = useState<string | null>(null);
+  const [originalDocument, setOriginalDocument] = useState<string>(""); // Keep raw text
   const [uploadResult, setUploadResult] = useState<UploadResponse | null>(null);
   const [signResult, setSignResult] = useState<SignResponse | null>(null);
   const [visibleStep, setVisibleStep] = useState(0);
@@ -26,6 +27,7 @@ export default function SignDocument({ sessionId, certificate, onContinue }: Pro
     setError(null);
     try {
       const text = await file.text();
+      setOriginalDocument(text); // Store the raw document
       const result = await uploadDocument(text);
       setUploadResult(result);
       setStage("uploaded");
@@ -192,7 +194,7 @@ export default function SignDocument({ sessionId, certificate, onContinue }: Pro
           </div>
 
           <div className="sd-gate">
-            <button className="sd-btn" onClick={() => onContinue(signResult, uploadResult?.content ?? "")}>
+            <button className="sd-btn" onClick={() => onContinue(signResult, originalDocument)}>
               Send to Bob →
             </button>
           </div>
