@@ -156,3 +156,63 @@ std::string certificateTheoryJson() {
 }
 
 } // namespace Education
+
+namespace Education {
+
+std::string certificateVerificationTheoryJson() {
+    return R"JSON({
+  "title": "How Bob Verifies a Certificate",
+  "sections": [
+    {
+      "index": 1,
+      "title": "Why Bob Cannot Trust a Public Key Directly",
+      "body": "Anyone can claim to be Alice and publish a public key. Without a certificate, Bob has no way to know the key really belongs to Alice. A Certificate Authority (CA) solves this by signing Alice's public key, creating a verifiable bond between her identity and her key."
+    },
+    {
+      "index": 2,
+      "title": "The Verification Formula",
+      "body": "Bob uses the CA's public key (e_CA, n_CA) which he already trusts. He computes: recovered = ca_signature ^ e_CA mod n_CA. If recovered equals the cert_hash stored in the certificate, the certificate is authentic — it was definitely signed by the CA and has not been altered."
+    },
+    {
+      "index": 3,
+      "title": "What a Passing Check Means",
+      "body": "A valid CA signature proves two things: (1) The CA vouched for Alice's identity, and (2) The certificate has not been tampered with since the CA signed it. Bob can now trust that the public key inside the certificate truly belongs to Alice."
+    },
+    {
+      "index": 4,
+      "title": "What a Failing Check Means",
+      "body": "If recovered != cert_hash, the certificate is invalid. Either it was not signed by the trusted CA (self-signed or forged), or it was modified after signing. Bob must reject it and stop — using an untrusted certificate is a serious security risk."
+    }
+  ]
+})JSON";
+}
+
+std::string signatureVerificationTheoryJson() {
+    return R"JSON({
+  "title": "How Bob Verifies Alice's Signature",
+  "sections": [
+    {
+      "index": 1,
+      "title": "What a Digital Signature Proves",
+      "body": "A digital signature proves two things: (1) Authenticity — the document came from Alice because only she has her private key. (2) Integrity — the document has not changed since Alice signed it, because any change produces a different hash."
+    },
+    {
+      "index": 2,
+      "title": "The Verification Steps",
+      "body": "Step 1: Bob computes SHA-256 of the document he received. Step 2: Bob decrypts Alice's signature using her public key: recovered = signature ^ e_Alice mod n_Alice. Step 3: Bob compares the recovered integer with his computed hash (reduced mod n). If they match, the signature is valid."
+    },
+    {
+      "index": 3,
+      "title": "Why This is Secure",
+      "body": "Only Alice can produce a signature that decrypts (with her public key) to the correct hash. An attacker without Alice's private key cannot forge a signature. Any change to the document changes the SHA-256 hash, making the comparison fail and exposing tampering."
+    },
+    {
+      "index": 4,
+      "title": "The Combined Security Guarantee",
+      "body": "Certificate verification + signature verification together give Bob a strong guarantee: the document came from the real Alice (cert verified), and the document is exactly as she sent it (signature verified). This is the foundation of PKI security."
+    }
+  ]
+})JSON";
+}
+
+} // namespace Education

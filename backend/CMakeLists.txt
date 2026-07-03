@@ -28,7 +28,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(httplib)
 
-# Core library (BigInteger + RSA + Education + Session + Certificate + CA + Hash + Document)
+# Core library (BigInteger + RSA + Education + Session + Certificate + CA + Hash + Document + Bob)
 add_library(rsa_core
     src/BigInteger.cpp
     src/RSA.cpp
@@ -39,6 +39,7 @@ add_library(rsa_core
     src/CAHandler.cpp
     src/Hash.cpp
     src/DocumentHandler.cpp
+    src/BobHandler.cpp
 )
 target_include_directories(rsa_core PUBLIC include)
 
@@ -57,6 +58,7 @@ add_executable(rsa_tests
     tests/test_certificate.cpp
     tests/test_hash.cpp
     tests/test_document.cpp
+    tests/test_bob.cpp
 )
 target_include_directories(rsa_tests PRIVATE include)
 target_link_libraries(rsa_tests PRIVATE rsa_core GTest::gtest_main)

@@ -1,0 +1,344 @@
+.bv-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  text-align: left;
+}
+
+.bv-h1 {
+  font-size: 2rem !important;
+  margin: 0 0 0.6rem !important;
+  letter-spacing: -0.5px !important;
+}
+
+.bv-h2 {
+  font-size: 1.2rem !important;
+  margin: 0 0 1rem !important;
+}
+
+.bv-intro {
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 1.5rem !important;
+}
+
+/* ── What Bob received ── */
+.bv-received {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  background: var(--code-bg);
+}
+
+.bv-recv-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.bv-recv-item:last-child { border-bottom: none; }
+
+.bv-recv-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--accent);
+  width: 6rem;
+  flex-shrink: 0;
+}
+
+.bv-recv-val {
+  font-size: 0.88rem;
+  color: var(--text-h);
+  word-break: break-all;
+}
+
+.bv-mono {
+  font-family: var(--mono);
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+/* ── Theory sections ── */
+.bv-theory-section {
+  margin-bottom: 1.5rem;
+}
+
+.bv-theory-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.bv-theory-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bv-theory-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.bv-theory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bv-theory-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.bv-theory-item:hover { border-color: var(--accent); }
+
+.bv-theory-open {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.bv-theory-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 1rem;
+}
+
+.bv-theory-item-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bv-theory-item-title {
+  flex: 1;
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.bv-chevron {
+  font-size: 0.65rem;
+  color: var(--text);
+}
+
+.bv-theory-body {
+  margin: 0 !important;
+  padding: 0 1rem 0.9rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+/* ── Gate ── */
+.bv-gate {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1.5rem 0;
+}
+
+.bv-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.bv-btn:hover { opacity: 0.85; }
+
+/* ── Verification steps ── */
+.bv-verify-section { margin-bottom: 2rem; }
+
+.bv-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bv-step-card {
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  animation: bvFade 0.4s ease;
+}
+
+.bv-step-pass { border-left: 4px solid #16a34a; }
+.bv-step-fail { border-left: 4px solid #dc2626; }
+
+@media (prefers-color-scheme: dark) {
+  .bv-step-pass { border-left-color: #4ade80; }
+  .bv-step-fail { border-left-color: #f87171; }
+}
+
+@keyframes bvFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bv-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.bv-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bv-badge-pass { background: #dcfce7; color: #15803d; }
+.bv-badge-fail { background: #fee2e2; color: #991b1b; }
+
+@media (prefers-color-scheme: dark) {
+  .bv-badge-pass { background: #14532d; color: #86efac; }
+  .bv-badge-fail { background: #450a0a; color: #fca5a5; }
+}
+
+.bv-step-index {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.bv-step-title {
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: var(--text-h);
+}
+
+.bv-step-desc {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.55;
+  margin: 0 0 0.5rem !important;
+}
+
+.bv-step-value {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  background: var(--bg);
+  color: var(--accent);
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  word-break: break-all;
+  border: 1px solid var(--border);
+}
+
+.bv-step-loading {
+  color: var(--accent);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.bv-spinner {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Result banner ── */
+.bv-result-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid;
+}
+
+.bv-result-banner p {
+  margin: 0.2rem 0 0 !important;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.bv-result-banner strong {
+  font-size: 1.05rem;
+}
+
+.bv-success {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.bv-fail {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bv-success { background: #052e16; border-color: #166534; color: #86efac; }
+  .bv-fail    { background: #450a0a; border-color: #991b1b; color: #fca5a5; }
+}
+
+.bv-result-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* ── States ── */
+.bv-state {
+  padding: 3rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.bv-error { color: #dc2626; }

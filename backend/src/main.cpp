@@ -7,6 +7,7 @@
 #include "SessionHandler.h"
 #include "CAHandler.h"
 #include "DocumentHandler.h"
+#include "BobHandler.h"
 
 /// @brief Generate a simple random session ID (hex string)
 static std::string generateSessionId() {
@@ -67,6 +68,24 @@ int main() {
     svr.Post("/api/alice/sign-document", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content(handleSignDocument(req.body), "application/json");
+    });
+
+    // ── Phase 6: Certificate Verification Theory ──────────────────────────────
+    svr.Get("/api/education/certificate-verification", [](const httplib::Request&, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(Education::certificateVerificationTheoryJson(), "application/json");
+    });
+
+    // ── Phase 6: Signature Verification Theory ────────────────────────────────
+    svr.Get("/api/education/signature-verification", [](const httplib::Request&, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(Education::signatureVerificationTheoryJson(), "application/json");
+    });
+
+    // ── Phase 6: Bob Verify ───────────────────────────────────────────────────
+    svr.Post("/api/bob/verify", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(handleBobVerify(req.body), "application/json");
     });
 
     std::cout << "Server listening on http://localhost:8081\n";

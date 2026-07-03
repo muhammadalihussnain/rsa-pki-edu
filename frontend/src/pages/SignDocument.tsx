@@ -9,7 +9,7 @@ type Stage = "upload" | "uploaded" | "signing" | "signed" | "error";
 interface Props {
   sessionId: string;
   certificate: IssuedCertificate;
-  onContinue: (signResult: SignResponse) => void;
+  onContinue: (signResult: SignResponse, documentContent: string) => void;
 }
 
 export default function SignDocument({ sessionId, certificate, onContinue }: Props) {
@@ -192,7 +192,7 @@ export default function SignDocument({ sessionId, certificate, onContinue }: Pro
           </div>
 
           <div className="sd-gate">
-            <button className="sd-btn" onClick={() => onContinue(signResult)}>
+            <button className="sd-btn" onClick={() => onContinue(signResult, uploadResult?.content ?? "")}>
               Send to Bob →
             </button>
           </div>
