@@ -4,7 +4,7 @@
 /**
  * @brief Generate a random prime of exactly `bits` bits.
  */
-BigInteger RSA::generatePrime(int bits) {
+BigInteger RSACrypto::generatePrime(int bits) {
     return BigInteger::randomPrime(bits);
 }
 
@@ -17,7 +17,7 @@ BigInteger RSA::generatePrime(int bits) {
  * 4. Choose e = 65537 (standard public exponent)
  * 5. d = e^-1 mod phi
  */
-RSAKeyPair RSA::generateKeypair(int bits) {
+RSAKeyPair RSACrypto::generateKeypair(int bits) {
     int half = bits / 2;
     BigInteger p, q;
     do {
@@ -38,7 +38,7 @@ RSAKeyPair RSA::generateKeypair(int bits) {
 /**
  * @brief Encrypt: c = m^e mod n
  */
-BigInteger RSA::encrypt(const BigInteger& m,
+BigInteger RSACrypto::encrypt(const BigInteger& m,
                         const BigInteger& e,
                         const BigInteger& n) {
     return BigInteger::modPow(m, e, n);
@@ -47,7 +47,7 @@ BigInteger RSA::encrypt(const BigInteger& m,
 /**
  * @brief Decrypt: m = c^d mod n
  */
-BigInteger RSA::decrypt(const BigInteger& c,
+BigInteger RSACrypto::decrypt(const BigInteger& c,
                         const BigInteger& d,
                         const BigInteger& n) {
     return BigInteger::modPow(c, d, n);
@@ -56,7 +56,7 @@ BigInteger RSA::decrypt(const BigInteger& c,
 /**
  * @brief Sign: sig = hash^d mod n
  */
-BigInteger RSA::sign(const BigInteger& hash,
+BigInteger RSACrypto::sign(const BigInteger& hash,
                      const BigInteger& d,
                      const BigInteger& n) {
     return BigInteger::modPow(hash, d, n);
@@ -65,7 +65,7 @@ BigInteger RSA::sign(const BigInteger& hash,
 /**
  * @brief Verify: recovered = sig^e mod n
  */
-BigInteger RSA::verify(const BigInteger& signature,
+BigInteger RSACrypto::verify(const BigInteger& signature,
                        const BigInteger& e,
                        const BigInteger& n) {
     return BigInteger::modPow(signature, e, n);

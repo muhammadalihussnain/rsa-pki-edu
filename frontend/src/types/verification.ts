@@ -2,6 +2,7 @@ export interface VerifyStep {
   index: number;
   title: string;
   description: string;
+  formula: string;
   value: string;
   passed: boolean;
 }
@@ -9,6 +10,8 @@ export interface VerifyStep {
 export interface VerifyResponse {
   session_id: string;
   verified: boolean;
+  alice_signature: string;
+  hash_hex: string;
   failure_step?: number;
   failure_reason?: string;
   steps: VerifyStep[];

@@ -2,12 +2,14 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <utility>
 
 /**
  * @brief Arbitrary-precision non-negative integer for RSA math.
  *
- * Internally stores digits in base 10^9 (little-endian).
- * Supports the arithmetic operations required by RSA.
+ * Internally stores limbs in base 2^32 (little-endian uint32_t).
+ * This makes bit-level ops (>>, <<, getBit, isEven) O(n/32) instead
+ * of O(n) divisions — critical for Miller-Rabin on large numbers.
  */
 class BigInteger {
 public:
@@ -22,6 +24,10 @@ public:
     BigInteger operator%(const BigInteger& mod) const;
     BigInteger operator/(const BigInteger& rhs) const;
 
+    /// @brief Combined division and modulo — avoids double computation
+    static std::pair<BigInteger, BigInteger> divmod(const BigInteger& a,
+                                                     const BigInteger& b);
+
     // Comparison
     bool operator==(const BigInteger& rhs) const;
     bool operator!=(const BigInteger& rhs) const;
@@ -30,16 +36,16 @@ public:
     bool operator>(const BigInteger& rhs) const;
     bool operator>=(const BigInteger& rhs) const;
 
-    // Bit operations
+    // Bit operations — O(1) or O(n/32) thanks to base-2^32 representation
     BigInteger operator>>(int shift) const;
     BigInteger operator<<(int shift) const;
     bool isEven() const;
     bool isZero() const;
     bool isOne() const;
-    int bitLength() const;
+    int  bitLength() const;
     bool getBit(int pos) const;
 
-    /// @brief Modular exponentiation: (base^exp) mod m
+    /// @brief Modular exponentiation: (base^exp) mod m  — square-and-multiply
     static BigInteger modPow(const BigInteger& base,
                              const BigInteger& exp,
                              const BigInteger& mod);
@@ -55,19 +61,16 @@ public:
 
     std::string toString() const;
 
-    // Extended Euclidean: returns gcd; sets x, y s.t. a*x + b*y = gcd
-    static BigInteger extGcd(const BigInteger& a,
-                             const BigInteger& b,
-                             BigInteger& x,
-                             BigInteger& y);
+    // Extended Euclidean
+    static BigInteger extGcd(const BigInteger& a, const BigInteger& b,
+                             BigInteger& x, BigInteger& y);
 
-    /// @brief Modular inverse of a mod m (m must be coprime to a)
+    /// @brief Modular inverse of a mod m
     static BigInteger modInverse(const BigInteger& a, const BigInteger& m);
 
 private:
-    static constexpr uint64_t BASE = 1000000000ULL; // 10^9
-    std::vector<uint64_t> digits_; // little-endian base-10^9 digits
+    std::vector<uint32_t> digits_; ///< little-endian base-2^32 limbs
 
     void trim();
-    static BigInteger fromDigits(std::vector<uint64_t> d);
+    static BigInteger fromDigits(std::vector<uint32_t> d);
 };

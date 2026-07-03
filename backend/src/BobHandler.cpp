@@ -90,8 +90,9 @@ struct VerifyStep {
     int         index;
     std::string title;
     std::string description;
-    std::string value;
-    bool        passed;   ///< true = check passed, false = failed
+    std::string formula;   ///< Math formula shown prominently
+    std::string value;     ///< Computed/result value
+    bool        passed;
 };
 
 static std::string stepsToJson(const std::vector<VerifyStep>& steps) {
@@ -100,11 +101,12 @@ static std::string stepsToJson(const std::vector<VerifyStep>& steps) {
     for (size_t i = 0; i < steps.size(); i++) {
         const auto& s = steps[i];
         o << "    {\n";
-        o << "      \"index\": "       << s.index                  << ",\n";
-        o << "      \"title\": \""     << jsonEscape(s.title)      << "\",\n";
-        o << "      \"description\": \""<< jsonEscape(s.description)<< "\",\n";
-        o << "      \"value\": \""     << jsonEscape(s.value)      << "\",\n";
-        o << "      \"passed\": "      << (s.passed ? "true" : "false") << "\n";
+        o << "      \"index\": "        << s.index                   << ",\n";
+        o << "      \"title\": \""      << jsonEscape(s.title)       << "\",\n";
+        o << "      \"description\": \""<< jsonEscape(s.description) << "\",\n";
+        o << "      \"formula\": \""    << jsonEscape(s.formula)     << "\",\n";
+        o << "      \"value\": \""      << jsonEscape(s.value)       << "\",\n";
+        o << "      \"passed\": "       << (s.passed ? "true" : "false") << "\n";
         o << "    }";
         if (i + 1 < steps.size()) o << ",";
         o << "\n";
@@ -168,25 +170,30 @@ std::string handleBobVerify(const std::string& requestBody) {
 
         if (!certValid) overallPassed = false;
 
+        std::string caE = caKeys.e.toString();
+        std::string caN = caKeys.n.toString().substr(0, 20) + "...";
+
         steps.push_back({
             1,
-            "Verify Certificate (CA Signature Check)",
-            "Bob uses the CA's public key to recover the cert hash: recovered = ca_signature^e_CA mod n_CA. "
-            "If recovered == cert_hash the certificate is authentic and was issued by the trusted CA.",
+            "Verify Certificate — CA Signature",
+            "Bob has the CA's public key (e_CA, n_CA) pre-installed as a trust anchor. "
+            "He recovers the certificate hash to confirm the CA actually signed it. "
+            "If the certificate was tampered with or forged, this check fails immediately.",
+            "recovered = ca_signature ^ e_CA  mod  n_CA",
             certValid
-                ? "PASS — recovered hash matches cert_hash. Certificate is trusted."
-                : "FAIL — recovered hash does not match. Certificate is not trusted.",
+                ? "PASS  recovered == cert_hash  (Certificate is authentic and trusted)"
+                : "FAIL  recovered != cert_hash  (Certificate is invalid or forged)",
             certValid
         });
 
         if (!certValid) {
-            // No point continuing — certificate isn't trusted
             std::ostringstream out;
             out << "{\n";
-            out << "  \"session_id\": \"" << sessionId       << "\",\n";
+            out << "  \"session_id\": \"" << sessionId << "\",\n";
             out << "  \"verified\": false,\n";
             out << "  \"failure_step\": 1,\n";
             out << "  \"failure_reason\": \"Certificate CA signature is invalid — certificate not trusted\",\n";
+            out << "  \"alice_signature\": \"" << signature << "\",\n";
             out << "  \"steps\": " << stepsToJson(steps) << "\n";
             out << "}";
             return out.str();
@@ -194,49 +201,55 @@ std::string handleBobVerify(const std::string& requestBody) {
     }
 
     // ── Step 2: Extract Alice's public key from certificate ───────────────────
-    steps.push_back({
-        2,
-        "Extract Alice's Public Key from Certificate",
-        "Since the certificate is trusted, Bob can safely use the public key it contains. "
-        "This key (n, e) belongs to Alice and was vouched for by the CA.",
-        "n = " + certPubN.substr(0, 24) + "...  e = " + certPubE,
-        true
-    });
+    {
+        std::string eDisplay = certPubE;
+        std::string nDisplay = certPubN.substr(0, 24) + "...";
+        steps.push_back({
+            2,
+            "Extract Alice's Public Key from Certificate",
+            "The certificate is trusted, so the public key inside it genuinely belongs to Alice. "
+            "Bob extracts (e_Alice, n_Alice) — these are the ONLY keys Bob uses for signature verification. "
+            "Bob's own private key plays no role in this process.",
+            "Public key from cert:  e = " + eDisplay + ",  n = " + nDisplay,
+            "e_Alice = " + eDisplay + "\nn_Alice = " + certPubN,
+            true
+        });
+    }
 
-    // ── Step 3: Show the SHA-256 hash Bob received ────────────────────────────
-    // Bob receives the hash that Alice computed and signed.
-    // For the educational demo the hash travels with the signed packet.
-    std::string computedHashHex = hashHex;
-
+    // ── Step 3: Document hash ─────────────────────────────────────────────────
     steps.push_back({
         3,
-        "SHA-256 Hash of Document",
-        "This is the SHA-256 fingerprint of Alice's document. "
-        "Bob will verify that Alice's signature decrypts to exactly this value.",
-        computedHashHex,
+        "SHA-256 Hash of the Document",
+        "This is the SHA-256 fingerprint of Alice's document — the exact value Alice computed and signed. "
+        "Any modification to the document (even one byte) produces a completely different hash.",
+        "hash = SHA-256(document)",
+        hashHex,
         true
     });
 
-    // ── Step 4: Decrypt the signature using Alice's public key ────────────────
+    // ── Step 4: Decrypt signature with Alice's PUBLIC key ─────────────────────
+    // NOTE: Bob uses Alice's PUBLIC key — NOT Bob's private key.
+    // This recovers the hash integer Alice used when signing.
     BigInteger sigInt(signature);
     BigInteger alicePubN(certPubN);
     BigInteger alicePubE(certPubE);
 
     BigInteger recoveredHashInt = RSACrypto::verify(sigInt, alicePubE, alicePubN);
-    std::string recoveredHashDecimal = recoveredHashInt.toString();
+    std::string recoveredDecimal = recoveredHashInt.toString();
 
     steps.push_back({
         4,
         "Decrypt Signature with Alice's Public Key",
-        "recovered = signature^e_Alice mod n_Alice. "
-        "This reverses Alice's signing operation and recovers the hash integer she originally signed.",
-        "recovered = " + recoveredHashDecimal,
+        "Bob applies Alice's PUBLIC key to her signature. This is the inverse of signing: "
+        "Alice encrypted with her private key, so only her public key can reverse it. "
+        "The result is the hash integer Alice originally signed.",
+        "recovered = signature ^ e_Alice  mod  n_Alice",
+        "recovered = " + recoveredDecimal,
         true
     });
 
-    // ── Step 5: Compare hashes ────────────────────────────────────────────────
-    // Convert computedHashHex to integer with same reduction as signing used
-    BigInteger computedHashInt = hexToBigInt(computedHashHex);
+    // ── Step 5: Compare recovered hash with document hash ────────────────────
+    BigInteger computedHashInt = hexToBigInt(hashHex);
     BigInteger computedHashReduced = computedHashInt % alicePubN;
 
     bool hashesMatch = (recoveredHashInt == computedHashReduced);
@@ -245,22 +258,26 @@ std::string handleBobVerify(const std::string& requestBody) {
     steps.push_back({
         5,
         "Compare Hashes",
-        "Bob reduces his computed SHA-256 hash mod n_Alice (same reduction Alice used when signing), "
-        "then checks: recovered == computed_hash mod n. A match proves the document is authentic and unmodified.",
+        "Bob converts the SHA-256 hex to an integer and reduces it mod n_Alice (the same "
+        "operation Alice applied before signing). If recovered == hash mod n, the signature "
+        "is valid — the document is authentic and unmodified.",
+        "recovered  ==  SHA-256(doc) mod n_Alice  ?",
         hashesMatch
-            ? "PASS — hashes match. Document is authentic and from Alice."
-            : "FAIL — hash mismatch. Document has been tampered with or signature is forged.",
+            ? "PASS  " + recoveredDecimal + "  ==  " + computedHashReduced.toString()
+            : "FAIL  " + recoveredDecimal + "  !=  " + computedHashReduced.toString(),
         hashesMatch
     });
 
     // ── Build response ────────────────────────────────────────────────────────
     std::ostringstream out;
     out << "{\n";
-    out << "  \"session_id\": \"" << sessionId                         << "\",\n";
-    out << "  \"verified\": "     << (overallPassed ? "true" : "false") << ",\n";
+    out << "  \"session_id\": \"" << sessionId << "\",\n";
+    out << "  \"verified\": " << (overallPassed ? "true" : "false") << ",\n";
+    out << "  \"alice_signature\": \"" << signature << "\",\n";
+    out << "  \"hash_hex\": \"" << hashHex << "\",\n";
     if (!overallPassed) {
         out << "  \"failure_step\": 5,\n";
-        out << "  \"failure_reason\": \"Document hash mismatch — document was tampered or signature is invalid\",\n";
+        out << "  \"failure_reason\": \"Hash mismatch — document was tampered or signature is forged\",\n";
     }
     out << "  \"steps\": " << stepsToJson(steps) << "\n";
     out << "}";

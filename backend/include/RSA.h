@@ -15,8 +15,9 @@ struct RSAKeyPair {
  * @brief RSA operations: key generation, encrypt, decrypt, sign, verify.
  *
  * No pre-built crypto libraries are used — all math is done via BigInteger.
+ * Named RSACrypto to avoid collision with OpenSSL's RSA typedef.
  */
-class RSA {
+class RSACrypto {
 public:
     /// @brief Generate a random `bits`-bit prime suitable for RSA
     static BigInteger generatePrime(int bits);
