@@ -9,6 +9,7 @@
 #include "DocumentHandler.h"
 #include "BobHandler.h"
 #include "AttackerHandler.h"
+#include "TLSHandler.h"
 
 /// @brief Generate a simple random session ID (hex string)
 static std::string generateSessionId() {
@@ -93,6 +94,12 @@ int main() {
     svr.Post("/api/fake-alice/attempt", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content(handleFakeAliceAttempt(req.body), "application/json");
+    });
+
+    // ── Phase 8: TLS Handshake Simulation ────────────────────────────────────
+    svr.Post("/api/tls/handshake", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(handleTLSHandshake(req.body), "application/json");
     });
 
     std::cout << "Server listening on http://localhost:8081\n";

@@ -1,0 +1,40 @@
+name: Coverage Upload
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  upload-coverage:
+    runs-on: ubuntu-22.04
+    needs: []
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ gcovr
+
+      - name: Build with coverage
+        run: |
+          cmake -S backend -B backend/build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+          cmake --build backend/build --parallel 4
+
+      - name: Run tests
+        run: ctest --test-dir backend/build --output-on-failure
+
+      - name: Generate Codecov XML
+        run: |
+          gcovr \
+            --root backend/src \
+            --object-directory backend/build \
+            --xml coverage.xml
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          flags: backend
+          fail_ci_if_error: false

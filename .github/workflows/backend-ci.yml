@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y cmake g++ gcovr
 
-      - name: Configure
+      - name: Configure (with coverage)
         run: cmake -S backend -B backend/build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
 
       - name: Build
@@ -25,13 +25,33 @@ jobs:
       - name: Run tests
         run: ctest --test-dir backend/build --output-on-failure
 
-      - name: Check coverage (≥ 90%)
+      - name: Generate coverage report (XML for Codecov)
         run: |
           gcovr \
-            --root backend \
+            --root backend/src \
+            --object-directory backend/build \
+            --xml coverage.xml \
+            --print-summary
+
+      - name: Enforce ≥ 90% line coverage on core modules
+        run: |
+          gcovr \
+            --root backend/src \
             --filter backend/src/BigInteger.cpp \
             --filter backend/src/RSA.cpp \
-            --filter backend/src/education.cpp \
+            --filter backend/src/Hash.cpp \
+            --filter backend/src/HMAC.cpp \
+            --filter backend/src/Certificate.cpp \
+            --filter backend/src/DocumentHandler.cpp \
+            --filter backend/src/BobHandler.cpp \
+            --filter backend/src/AttackerHandler.cpp \
+            --filter backend/src/TLSSession.cpp \
             --object-directory backend/build \
             --fail-under-line 90 \
             --print-summary
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: coverage.xml

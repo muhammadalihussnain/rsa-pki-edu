@@ -5,10 +5,19 @@ import CACertificate from "./pages/CACertificate";
 import SignDocument from "./pages/SignDocument";
 import BobVerify from "./pages/BobVerify";
 import AttackerScenario from "./pages/AttackerScenario";
+import TLSHandshake from "./pages/TLSHandshake";
 import type { IssuedCertificate } from "./types/certificate";
 import type { SignResponse } from "./types/document";
 
-type Screen = "theory" | "keygen" | "ca-cert" | "sign" | "bob-verify" | "attacker" | "done";
+type Screen =
+  | "theory"
+  | "keygen"
+  | "ca-cert"
+  | "sign"
+  | "bob-verify"
+  | "attacker"
+  | "tls"
+  | "done";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("theory");
@@ -69,32 +78,45 @@ export default function App() {
       <AttackerScenario
         sessionId={sessionId}
         originalDocument={documentContent}
+        onContinue={() => setScreen("tls")}
+      />
+    );
+  }
+
+  if (screen === "tls") {
+    return (
+      <TLSHandshake
+        sessionId={sessionId}
         onContinue={() => setScreen("done")}
       />
     );
   }
 
   return (
-    <main style={{ padding: "3rem", textAlign: "center", fontFamily: "system-ui" }}>
-      <h2>Phase 7 complete</h2>
-      <p style={{ color: "var(--text)", marginTop: "0.5rem" }}>
-        You&apos;ve seen how PKI catches both forged certificates and tampered documents.
-      </p>
-      <button
-        onClick={() => setScreen("theory")}
-        style={{
-          marginTop: "1.5rem",
-          background: "var(--accent)",
-          color: "#fff",
-          border: "none",
-          padding: "0.65rem 1.4rem",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontSize: "0.95rem",
-        }}
-      >
-        ← Start over
-      </button>
+    <main className="done-page">
+      <div className="done-card">
+        <span className="done-icon">🎓</span>
+        <h2>Walkthrough Complete</h2>
+        <p>
+          You have completed all modules: RSA theory, key generation,
+          certificate authority, document signing, verification, attacker
+          scenarios, and TLS simulation.
+        </p>
+        <div className="done-summary">
+          <div className="done-item">✓ RSA key generation understood</div>
+          <div className="done-item">✓ Certificate chain verified</div>
+          <div className="done-item">✓ Document signed with SHA-256 + RSA</div>
+          <div className="done-item">✓ Bob's 5-step verification passed</div>
+          <div className="done-item">✓ Forged certificate attack detected</div>
+          <div className="done-item">✓ TLS handshake with HMAC completed</div>
+        </div>
+        <button
+          className="done-restart"
+          onClick={() => setScreen("theory")}
+        >
+          ← Start over
+        </button>
+      </div>
     </main>
   );
 }
