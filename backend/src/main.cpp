@@ -8,6 +8,7 @@
 #include "CAHandler.h"
 #include "DocumentHandler.h"
 #include "BobHandler.h"
+#include "AttackerHandler.h"
 
 /// @brief Generate a simple random session ID (hex string)
 static std::string generateSessionId() {
@@ -86,6 +87,12 @@ int main() {
     svr.Post("/api/bob/verify", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content(handleBobVerify(req.body), "application/json");
+    });
+
+    // ── Phase 7: Fake-Alice Attacker ──────────────────────────────────────────
+    svr.Post("/api/fake-alice/attempt", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content(handleFakeAliceAttempt(req.body), "application/json");
     });
 
     std::cout << "Server listening on http://localhost:8081\n";

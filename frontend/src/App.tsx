@@ -4,10 +4,11 @@ import KeyGeneration from "./pages/KeyGeneration";
 import CACertificate from "./pages/CACertificate";
 import SignDocument from "./pages/SignDocument";
 import BobVerify from "./pages/BobVerify";
+import AttackerScenario from "./pages/AttackerScenario";
 import type { IssuedCertificate } from "./types/certificate";
 import type { SignResponse } from "./types/document";
 
-type Screen = "theory" | "keygen" | "ca-cert" | "sign" | "bob-verify" | "done";
+type Screen = "theory" | "keygen" | "ca-cert" | "sign" | "bob-verify" | "attacker" | "done";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("theory");
@@ -23,10 +24,7 @@ export default function App() {
   if (screen === "keygen") {
     return (
       <KeyGeneration
-        onContinue={(sid) => {
-          setSessionId(sid);
-          setScreen("ca-cert");
-        }}
+        onContinue={(sid) => { setSessionId(sid); setScreen("ca-cert"); }}
       />
     );
   }
@@ -35,10 +33,7 @@ export default function App() {
     return (
       <CACertificate
         sessionId={sessionId}
-        onContinue={(cert) => {
-          setCertificate(cert);
-          setScreen("sign");
-        }}
+        onContinue={(cert) => { setCertificate(cert); setScreen("sign"); }}
       />
     );
   }
@@ -64,6 +59,16 @@ export default function App() {
         document={documentContent}
         signResult={signResult}
         certificate={certificate}
+        onContinue={() => setScreen("attacker")}
+      />
+    );
+  }
+
+  if (screen === "attacker") {
+    return (
+      <AttackerScenario
+        sessionId={sessionId}
+        originalDocument={documentContent}
         onContinue={() => setScreen("done")}
       />
     );
@@ -71,9 +76,9 @@ export default function App() {
 
   return (
     <main style={{ padding: "3rem", textAlign: "center", fontFamily: "system-ui" }}>
-      <h2>Phase 6 complete — Phase 7 coming next</h2>
+      <h2>Phase 7 complete</h2>
       <p style={{ color: "var(--text)", marginTop: "0.5rem" }}>
-        Session: <code>{sessionId}</code>
+        You&apos;ve seen how PKI catches both forged certificates and tampered documents.
       </p>
       <button
         onClick={() => setScreen("theory")}
