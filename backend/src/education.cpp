@@ -75,7 +75,7 @@ std::string rsaTheoryJson() {
     {
       "index": 5,
       "title": "Compute private exponent d",
-      "explanation": "Find d as the modular inverse of e mod phi(n). Condition: (e x d) mod phi(n) = 1.",
+      "explanation": "Find d as the modular inverse of e mod phi(n). Condition: (e x d) mod phi(n) = 1. The public and private keys are mathematical inverses — one encrypts what only the other can decrypt.",
       "condition": "(e x d) mod phi(n) = 1"
     },
     {
